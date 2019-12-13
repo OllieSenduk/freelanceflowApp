@@ -1,4 +1,5 @@
 version: '3'
+
 services:
   db:
     image: postgres
@@ -27,5 +28,20 @@ services:
     depends_on:
       - db
     command: bundle exec rails s webrick -b '0.0.0.0'
+  ui-freelancers:
+    container_name: ui-freelancers
+    image: ui-freelancers
+    build:
+      context: ui-freelancers
+    volumes:
+      - ./ui-freelancers/:/usr/src/app
+      - './ui-freelancers/app/node_modules'
+    ports:
+      - '3001:3001'
+    environment:
+      - NODE_ENV=development
+    command: 
+      npm start
+    restart: always
 volumes:
   pgdata:  
