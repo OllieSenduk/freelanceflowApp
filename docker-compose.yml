@@ -1,0 +1,31 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: mysecretpassword
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  backend:
+    environment:
+      PRODUCTION: 'true'
+    image: freelance-flow-backend
+    build:
+      context: freelance-flow-backend
+      args:
+        RUBY_VERSION: '2.6.3'
+        BUNDLER_VERSION: 2.0.2
+        PG_MAJOR: 11
+        mode: development
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./freelance-flow-backend:/usr/src/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    command: bundle exec rails s webrick -b '0.0.0.0'
+volumes:
+  pgdata:  
